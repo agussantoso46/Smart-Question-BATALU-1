@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART QUESTION BATALU 1 - UPTD SDN BANJAR TABULU 1</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- React & React DOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel CDN to render JSX directly in HTML5 -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- html2pdf.js for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @media print {
+            header, footer, .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+            }
+            #printable-assessment-area {
+                border: none !important;
+                box-shadow: none !important;
+                background: white !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-slate-900 selection:bg-sky-500 selection:text-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Vector Logo UPTD SDN BANJAR TABULU 1 (Presis sesuai logo asli)
+        const SchoolLogo = ({ className = "w-16 h-20" }) => (
+            <svg className={className} viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M200 10 L380 60 C380 300 280 440 200 490 C120 440 20 300 20 60 Z" fill="#064e3b" stroke="#022c22" strokeWidth="8"/>
+                <path d="M200 22 L368 68 C368 290 272 426 200 474 C128 426 32 290 32 68 Z" fill="#15803d" stroke="#22c55e" strokeWidth="6"/>
+                <path d="M200 35 L355 78 C355 280 262 410 200 455 C138 410 45 280 45 78 Z" fill="url(#bgGreenGradient)" />
+
+                <defs>
+                    <linearGradient id="bgGreenGradient" x1="200" y1="35" x2="200" y2="455" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#4ade80"/>
+                        <stop offset="50%" stopColor="#86efac"/>
+                        <stop offset="100%" stopColor="#bef264"/>
+                    </linearGradient>
+                </defs>
+
+                <path id="textArc" d="M 50 120 A 170 170 0 0 1 350 120" fill="none" />
+                <text fill="#0f172a" fontSize="25" fontWeight="900" fontFamily="sans-serif">
+                    <textPath href="#textArc" startOffset="50%" textAnchor="middle">
+                        UPTD SDN BANJAR TABULU 1
+                    </textPath>
+                </text>
+
+                {/* 3 Red Stars */}
+                <polygon points="200,85 206,102 224,102 210,112 215,129 200,119 185,129 190,112 176,102 194,102" fill="#dc2626" stroke="#991b1b" strokeWidth="1"/>
+                <polygon points="155,105 160,119 174,119 163,127 167,140 155,132 143,140 147,127 136,119 150,119" fill="#dc2626" stroke="#991b1b" strokeWidth="1"/>
+                <polygon points="245,105 250,119 264,119 253,127 257,140 245,132 233,140 237,127 226,119 240,119" fill="#dc2626" stroke="#991b1b" strokeWidth="1"/>
+
+                {/* Globe */}
+                <circle cx="200" cy="235" r="85" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="3"/>
+                <ellipse cx="200" cy="235" rx="85" ry="35" fill="none" stroke="#93c5fd" strokeWidth="2" strokeDasharray="4 3"/>
+                <ellipse cx="200" cy="235" rx="35" ry="85" fill="none" stroke="#93c5fd" strokeWidth="2" strokeDasharray="4 3"/>
+                <path d="M150 205 Q 170 185 190 215 T 230 195 T 260 225 Q 240 265 210 255 T 160 245 Z" fill="#22c55e" opacity="0.9"/>
+                <path d="M175 270 Q 195 285 220 275 T 240 290 Z" fill="#ec4899" opacity="0.8"/>
+
+                {/* Pencil & Pen */}
+                <g transform="translate(0, 10)">
+                    <rect x="165" y="150" width="14" height="130" rx="3" fill="#facc15" transform="rotate(-15 165 150)" stroke="#000" strokeWidth="1.5"/>
+                    <polygon points="152,275 160,295 167,271" fill="#fef08a" stroke="#000" strokeWidth="1.5"/>
+                    <polygon points="158,288 160,295 162,286" fill="#0f172a"/>
+                    
+                    <rect x="220" y="150" width="14" height="130" rx="3" fill="#1e3a8a" transform="rotate(15 220 150)" stroke="#facc15" strokeWidth="1.5"/>
+                    <polygon points="243,275 235,295 228,271" fill="#cbd5e1" stroke="#000" strokeWidth="1.5"/>
+                    <polygon points="237,288 235,295 233,286" fill="#0f172a"/>
+                </g>
+
+                {/* Padi & Kapas */}
+                <g fill="#eab308" stroke="#713f12" strokeWidth="1.2">
+                    <circle cx="110" cy="220" r="9"/>
+                    <circle cx="100" cy="240" r="9"/>
+                    <circle cx="95" cy="265" r="9"/>
+                    <circle cx="98" cy="290" r="9"/>
+                    <circle cx="110" cy="315" r="9"/>
+                    <circle cx="125" cy="335" r="9"/>
+                </g>
+                <g fill="#ffffff" stroke="#15803d" strokeWidth="2">
+                    <path d="M285 210 Q 295 200 305 210 Q 315 220 305 230 Q 295 240 285 230 Z" />
+                    <path d="M295 235 Q 305 225 315 235 Q 325 245 315 255 Q 305 265 295 255 Z" />
+                    <path d="M300 260 Q 310 250 320 260 Q 330 270 320 280 Q 310 290 300 280 Z" />
+                    <path d="M295 285 Q 305 275 315 285 Q 325 295 315 305 Q 305 315 295 305 Z" />
+                    <path d="M280 310 Q 290 300 300 310 Q 310 320 300 330 Q 290 340 280 330 Z" />
+                </g>
+
+                {/* Open Book */}
+                <path d="M 105 365 Q 200 345 200 380 Q 200 345 295 365 L 295 405 Q 200 385 200 415 Q 200 385 105 405 Z" fill="#ffffff" stroke="#0f172a" strokeWidth="3"/>
+                <line x1="200" y1="380" x2="200" y2="415" stroke="#0f172a" strokeWidth="3"/>
+
+                <text x="200" y="438" textAnchor="middle" fill="#0f172a" fontSize="22" fontWeight="900" fontFamily="sans-serif">
+                    KEC. CAMPLONG
+                </text>
+                <text x="200" y="462" textAnchor="middle" fill="#0f172a" fontSize="22" fontWeight="900" fontFamily="sans-serif">
+                    SAMPANG
+                </text>
+            </svg>
+        );
+
+        function App() {
+            const [page, setPage] = useState('login');
+            const [pin, setPin] = useState('');
+            const [showPin, setShowPin] = useState(false);
+            const [loginError, setLoginError] = useState('');
+
+            const [formData, setFormData] = useState({
+                teacherName: "Da'watul Choiroh, S.Pd.I.",
+                gradeClass: "Kelas 4",
+                fase: "Fase B",
+                semester: "Semester Ganjil",
+                subject: "Matematika",
+                assessmentType: "Penilaian Harian",
+                difficulty: "HOTS",
+                material: "Pecahan dan Desimal",
+                learningGoal: "Siswa mampu mengurutkan dan membandingkan pecahan sederhana serta mengubahnya ke bentuk desimal.",
+                questionCount: 10,
+                questionTypes: ["Pilihan Ganda", "Isian", "Uraian"],
+                academicYear: "2026/2027",
+                assessmentDate: new Date().toISOString().split('T')[0],
+                customInstruction: "Gunakan bahasa yang ramah anak, berikan konteks kehidupan sehari-hari di desa, dan cantumkan pedoman penskoran yang detail."
+            });
+
+            const [isLoading, setIsLoading] = useState(false);
+            const [loadingStatus, setLoadingStatus] = useState('');
+            const [errorMessage, setErrorMessage] = useState('');
+            const [assessmentData, setAssessmentData] = useState(null);
+            const [history, setHistory] = useState([]);
+            const [historySearch, setHistorySearch] = useState('');
+            const [isEditing, setIsEditing] = useState(false);
+            const [copySuccess, setCopySuccess] = useState(false);
+
+            useEffect(() => {
+                const savedHistory = localStorage.getItem('smart_question_batalu_history');
+                if (savedHistory) {
+                    try {
+                        setHistory(JSON.parse(savedHistory));
+                    } catch (e) {
+                        console.error("Failed to parse history", e);
+                    }
+                }
+            }, []);
+
+            useEffect(() => {
+                const cls = formData.gradeClass;
+                if (cls === "Kelas 1" || cls === "Kelas 2") setFormData(prev => ({ ...prev, fase: "Fase A" }));
+                else if (cls === "Kelas 3" || cls === "Kelas 4") setFormData(prev => ({ ...prev, fase: "Fase B" }));
+                else if (cls === "Kelas 5" || cls === "Kelas 6") setFormData(prev => ({ ...prev, fase: "Fase C" }));
+            }, [formData.gradeClass]);
+
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (pin === 'banjartabulu1') {
+                    setLoginError('');
+                    setPage('dashboard');
+                } else {
+                    setLoginError('PIN yang Anda masukkan salah. Silakan coba kembali.');
+                }
+            };
+
+            const handleLogout = () => {
+                setPin('');
+                setPage('login');
+            };
+
+            const handleTypeToggle = (type) => {
+                setFormData(prev => {
+                    const exists = prev.questionTypes.includes(type);
+                    if (exists) {
+                        if (prev.questionTypes.length === 1) return prev;
+                        return { ...prev, questionTypes: prev.questionTypes.filter(t => t !== type) };
+                    } else {
+                        return { ...prev, questionTypes: [...prev.questionTypes, type] };
+                    }
+                });
+            };
+
+            const generateQuestionsWithAI = async () => {
+                if (!formData.material.trim()) {
+                    setErrorMessage("Materi / Ruang Lingkup harus diisi.");
+                    return;
+                }
+                if (!formData.learningGoal.trim()) {
+                    setErrorMessage("Tujuan Pembelajaran harus diisi.");
+                    return;
+                }
+                if (formData.questionCount <= 0 || isNaN(formData.questionCount)) {
+                    setErrorMessage("Jumlah soal harus berupa angka bulat positif.");
+                    return;
+                }
+
+                setIsLoading(true);
+                setErrorMessage('');
+                setLoadingStatus('AI sedang menganalisis kurikulum dan menyusun soal...');
+
+                const systemPrompt = `Anda adalah asisten ahli penyusunan asesmen pendidikan sekolah dasar di Indonesia. Buatlah instrumen soal berdasarkan pengaturan yang diberikan guru.
+Patuhi ketentuan berikut:
+1. Gunakan bahasa Indonesia yang jelas, komunikatif, dan sesuai tingkat perkembangan siswa SD.
+2. Sesuaikan kedalaman materi dengan kelas dan fase yang dipilih.
+3. Gunakan materi dan tujuan pembelajaran sebagai acuan utama.
+4. Sesuaikan soal dengan jenis asesmen dan tingkat kesulitan.
+5. Pastikan setiap soal memiliki jawaban yang benar atau kriteria jawaban yang jelas.
+6. Hindari pertanyaan ambigu, pilihan jawaban yang menyesatkan, dan informasi yang tidak relevan.
+7. Untuk soal pilihan ganda, gunakan pilihan A, B, C, dan D serta satu jawaban benar.
+8. Untuk pilihan ganda kompleks, cantumkan semua jawaban yang benar.
+9. Untuk soal menjodohkan, sediakan daftar soal dan pilihan pasangan yang jelas.
+10. Untuk soal uraian, berikan contoh jawaban dan pedoman penskoran.
+11. Untuk soal HOTS, gunakan situasi kontekstual yang memerlukan penalaran sesuai usia siswa.
+12. Buat kisi-kisi yang menunjukkan nomor soal, tujuan/indikator, materi, bentuk soal, dan tingkat kognitif.
+13. Buat kunci jawaban terpisah dari lembar soal siswa.
+14. Urutkan kelompok soal pada kisi-kisi dan lembar soal secara rapi: Pilihan Ganda terlebih dahulu, disusul Isian, kemudian Uraian.
+15. Pastikan total jumlah soal persis ${formData.questionCount}.`;
+
+                const userQuery = `Susun instrumen asesmen lengkap dalam format JSON terstruktur dengan detail berikut:
+- Nama Guru: ${formData.teacherName}
+- Sekolah: UPTD SDN BANJAR TABULU 1
+- Kelas/Fase: ${formData.gradeClass} (${formData.fase})
+- Semester: ${formData.semester}
+- Mata Pelajaran: ${formData.subject}
+- Jenis Asesmen: ${formData.assessmentType}
+- Tingkat Kesulitan: ${formData.difficulty}
+- Materi: ${formData.material}
+- Tujuan Pembelajaran: ${formData.learningGoal}
+- Total Jumlah Soal: ${formData.questionCount}
+- Bentuk Soal Diberdayakan: ${formData.questionTypes.join(', ')}
+- Tahun Pelajaran: ${formData.academicYear}
+- Tanggal Asesmen: ${formData.assessmentDate}
+- Instruksi Tambahan Guru: ${formData.customInstruction}`;
+
+                const jsonSchema = {
+                    type: "OBJECT",
+                    properties: {
+                        title: { type: "STRING" },
+                        instructions: { type: "STRING" },
+                        questions: {
+                            type: "ARRAY",
+                            items: {
+                                type: "OBJECT",
+                                properties: {
+                                    number: { type: "INTEGER" },
+                                    type: { type: "STRING" },
+                                    questionText: { type: "STRING" },
+                                    options: { 
+                                        type: "ARRAY", 
+                                        items: { type: "STRING" }
+                                    },
+                                    indicator: { type: "STRING" },
+                                    cognitiveLevel: { type: "STRING" },
+                                    answerKey: { type: "STRING" },
+                                    explanation: { type: "STRING" },
+                                    score: { type: "INTEGER" }
+                                },
+                                required: ["number", "type", "questionText", "indicator", "answerKey", "score"]
+                            }
+                        },
+                        scoringRules: {
+                            type: "OBJECT",
+                            properties: {
+                                mcScore: { type: "STRING" },
+                                fillScore: { type: "STRING" },
+                                essayScore: { type: "STRING" },
+                                formula: { type: "STRING" },
+                                maxScore: { type: "INTEGER" }
+                            }
+                        }
+                    },
+                    required: ["title", "instructions", "questions", "scoringRules"]
+                };
+
+                try {
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: userQuery }] }],
+                            systemInstruction: { parts: [{ text: systemPrompt }] },
+                            generationConfig: {
+                                responseMimeType: "application/json",
+                                responseSchema: jsonSchema
+                            }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Gagal menghubungi layanan AI (Status: ${response.status})`);
+                    }
+
+                    const result = await response.json();
+                    const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (!generatedText) {
+                        throw new Error("Layanan AI tidak mengembalikan data yang sesuai.");
+                    }
+
+                    const parsedJSON = JSON.parse(generatedText);
+
+                    const fullData = {
+                        id: Date.now().toString(),
+                        createdAt: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+                        metadata: { ...formData },
+                        content: parsedJSON
+                    };
+
+                    setAssessmentData(fullData);
+                    
+                    const updatedHistory = [fullData, ...history];
+                    setHistory(updatedHistory);
+                    localStorage.setItem('smart_question_batalu_history', JSON.stringify(updatedHistory));
+
+                    setPage('result');
+                } catch (err) {
+                    console.error(err);
+                    setErrorMessage("Terjadi kesalahan saat membuat soal: " + err.message + ". Silakan coba lagi.");
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleSaveAssessment = () => {
+                if (!assessmentData) return;
+                const existingIndex = history.findIndex(h => h.id === assessmentData.id);
+                let updatedHistory;
+                if (existingIndex >= 0) {
+                    updatedHistory = [...history];
+                    updatedHistory[existingIndex] = assessmentData;
+                } else {
+                    updatedHistory = [assessmentData, ...history];
+                }
+                setHistory(updatedHistory);
+                localStorage.setItem('smart_question_batalu_history', JSON.stringify(updatedHistory));
+                alert("Berhasil menyimpan perubahan soal ke Riwayat!");
+            };
+
+            const handleQuestionChange = (index, field, value) => {
+                const updatedQuestions = [...assessmentData.content.questions];
+                updatedQuestions[index][field] = value;
+                setAssessmentData({
+                    ...assessmentData,
+                    content: {
+                        ...assessmentData.content,
+                        questions: updatedQuestions
+                    }
+                });
+            };
+
+            const handleOptionChange = (qIndex, optIndex, value) => {
+                const updatedQuestions = [...assessmentData.content.questions];
+                updatedQuestions[qIndex].options[optIndex] = value;
+                setAssessmentData({
+                    ...assessmentData,
+                    content: {
+                        ...assessmentData.content,
+                        questions: updatedQuestions
+                    }
+                });
+            };
+
+            const handleDeleteQuestion = (index) => {
+                if (assessmentData.content.questions.length <= 1) {
+                    alert("Soal minimal tersisa 1.");
+                    return;
+                }
+                const updatedQuestions = assessmentData.content.questions.filter((_, i) => i !== index);
+                const renumbered = updatedQuestions.map((q, i) => ({ ...q, number: i + 1 }));
+                setAssessmentData({
+                    ...assessmentData,
+                    content: {
+                        ...assessmentData.content,
+                        questions: renumbered
+                    }
+                });
+            };
+
+            const handleAddQuestion = () => {
+                const newNum = assessmentData.content.questions.length + 1;
+                const newQ = {
+                    number: newNum,
+                    type: "Pilihan Ganda",
+                    questionText: "Ketikkan pertanyaan baru di sini...",
+                    options: ["Opsi A", "Opsi B", "Opsi C", "Opsi D"],
+                    indicator: "Mengukur indikator pembelajaran tambahan",
+                    cognitiveLevel: "C2",
+                    answerKey: "Opsi A",
+                    explanation: "Penjelasan jawaban baru.",
+                    score: 10
+                };
+                setAssessmentData({
+                    ...assessmentData,
+                    content: {
+                        ...assessmentData.content,
+                        questions: [...assessmentData.content.questions, newQ]
+                    }
+                });
+            };
+
+            const handleCopyToClipboard = () => {
+                if (!assessmentData) return;
+                let text = `UPTD SDN BANJAR TABULU 1\n`;
+                text += `ASESMEN: ${assessmentData.metadata.assessmentType.toUpperCase()}\n`;
+                text += `Mata Pelajaran: ${assessmentData.metadata.subject} | Kelas: ${assessmentData.metadata.gradeClass}\n`;
+                text += `Materi: ${assessmentData.metadata.material}\n\n`;
+                text += `--- LEMBAR SOAL ---\n\n`;
+
+                assessmentData.content.questions.forEach((q, idx) => {
+                    text += `${idx + 1}. ${q.questionText}\n`;
+                    if (q.options && q.options.length > 0) {
+                        q.options.forEach((opt, oIdx) => {
+                            const prefix = String.fromCharCode(65 + oIdx);
+                            text += `   ${prefix}. ${opt}\n`;
+                        });
+                    }
+                    text += `\n`;
+                });
+
+                navigator.clipboard.writeText(text);
+                setCopySuccess(true);
+                setTimeout(() => setCopySuccess(false), 3000);
+            };
+
+            const handleExportPDF = () => {
+                const element = document.getElementById('printable-assessment-area');
+                if (!element || !window.html2pdf) {
+                    alert("Library PDF sedang dimuat. Silakan coba beberapa detik lagi.");
+                    return;
+                }
+                const opt = {
+                    margin: 10,
+                    filename: `Soal_${formData.subject}_${formData.gradeClass}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                window.html2pdf().set(opt).from(element).save();
+            };
+
+            const handleExportWord = () => {
+                const element = document.getElementById('printable-assessment-area');
+                if (!element) return;
+                
+                const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+                    "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+                    "xmlns='http://www.w3.org/TR/REC-html40'>"+
+                    "<head><meta charset='utf-8'><title>Export Word</title><style>"+
+                    "body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.5; }"+
+                    "table { border-collapse: collapse; width: 100%; }"+
+                    "table, th, td { border: 1px solid black; padding: 6px; }"+
+                    "</style></head><body>";
+                const footer = "</body></html>";
+                const sourceHTML = header + element.innerHTML + footer;
+
+                const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+                const fileDownload = document.createElement("a");
+                document.body.appendChild(fileDownload);
+                fileDownload.href = source;
+                fileDownload.download = `Soal_${formData.subject}_${formData.gradeClass}.doc`;
+                fileDownload.click();
+                document.body.removeChild(fileDownload);
+            };
+
+            const formatDateIndo = (dateStr) => {
+                if (!dateStr) return "-";
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            };
+
+            return (
+                <div className="min-h-screen bg-sky-50 text-slate-900">
+                    
+                    {/* ==================== 1. LOGIN PIN PAGE ==================== */}
+                    {page === 'login' && (
+                        <div className="min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-gradient-to-br from-sky-400 via-sky-300 to-sky-500 text-slate-900 relative">
+                            <div className="w-full max-w-md bg-slate-100 text-slate-900 rounded-3xl shadow-2xl border-4 border-slate-200 p-8 text-center relative z-10">
+                                <div className="mx-auto flex justify-center mb-4 transform hover:scale-105 transition duration-300">
+                                    <SchoolLogo className="w-24 h-28 drop-shadow-md" />
+                                </div>
+
+                                <h1 className="text-2xl font-black text-sky-900 tracking-tight uppercase mb-1">
+                                    AI PEMBUAT SOAL OTOMATIS
+                                </h1>
+                                <p className="text-xs font-bold text-sky-600 tracking-widest uppercase mb-2">
+                                    SMART QUESTION BATALU 1
+                                </p>
+                                <p className="text-xs text-slate-500 max-w-xs mx-auto mb-6">
+                                    Sistem Cerdas Penyusunan Asesmen Guru SD
+                                </p>
+
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200 border border-sky-300 text-xs font-bold text-sky-900 mb-6">
+                                    <i className="fa-solid fa-graduation-cap text-sky-600"></i>
+                                    <span>UPTD SDN BANJAR TABULU 1</span>
+                                </div>
+
+                                <form onSubmit={handleLogin} className="space-y-4 text-left">
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-800 uppercase mb-2">
+                                            Masukkan PIN Akses Guru
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type={showPin ? "text" : "password"}
+                                                value={pin}
+                                                onChange={(e) => setPin(e.target.value)}
+                                                placeholder="Masukkan PIN rahasia..."
+                                                className="w-full pl-10 pr-12 py-3 bg-slate-200/80 border-2 border-sky-300 rounded-xl focus:outline-none focus:border-sky-500 text-sm font-semibold transition"
+                                                required
+                                            />
+                                            <i className="fa-solid fa-key text-sky-500 absolute left-3 top-3.5"></i>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPin(!showPin)}
+                                                className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-800 focus:outline-none"
+                                            >
+                                                <i className={`fa-solid ${showPin ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {loginError && (
+                                        <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl font-medium">
+                                            <i className="fa-solid fa-circle-exclamation text-rose-500"></i>
+                                            <span>{loginError}</span>
+                                        </div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        className="w-full py-3.5 px-4 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow-lg shadow-sky-500/30 transition duration-200 flex items-center justify-center gap-2 text-sm border border-sky-600 cursor-pointer"
+                                    >
+                                        <i className="fa-solid fa-right-to-bracket"></i>
+                                        <span>MASUK APLIKASI</span>
+                                    </button>
+                                </form>
+
+                                <div className="mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
+                                    © 2026 UPTD SDN BANJAR TABULU 1 • Kurikulum Merdeka AI Assist
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ==================== HEADER UTAMA ==================== */}
+                    {page !== 'login' && (
+                        <header className="bg-gradient-to-r from-sky-600 via-sky-500 to-sky-600 text-white sticky top-0 z-30 shadow-md border-b-2 border-sky-700 no-print">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                                <div 
+                                    className="flex items-center gap-3 cursor-pointer"
+                                    onClick={() => setPage('dashboard')}
+                                >
+                                    <SchoolLogo className="w-9 h-11" />
+                                    <div>
+                                        <h1 className="font-extrabold text-white text-base leading-tight tracking-wide">
+                                            SMART QUESTION BATALU 1
+                                        </h1>
+                                        <p className="text-[11px] text-sky-100 font-semibold">UPTD SDN BANJAR TABULU 1</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-1 sm:gap-2">
+                                    <button
+                                        onClick={() => setPage('dashboard')}
+                                        className={`px-3 py-2 text-xs font-bold rounded-lg transition ${
+                                            page === 'dashboard' ? 'bg-slate-200 text-sky-900 shadow-sm' : 'text-sky-100 hover:bg-sky-700/50'
+                                        }`}
+                                    >
+                                        Dashboard
+                                    </button>
+                                    <button
+                                        onClick={() => setPage('form')}
+                                        className={`px-3 py-2 text-xs font-bold rounded-lg transition ${
+                                            page === 'form' ? 'bg-slate-200 text-sky-900 shadow-sm' : 'text-sky-100 hover:bg-sky-700/50'
+                                        }`}
+                                    >
+                                        Buat Soal
+                                    </button>
+                                    <button
+                                        onClick={() => setPage('history')}
+                                        className={`px-3 py-2 text-xs font-bold rounded-lg transition ${
+                                            page === 'history' ? 'bg-slate-200 text-sky-900 shadow-sm' : 'text-sky-100 hover:bg-sky-700/50'
+                                        }`}
+                                    >
+                                        Riwayat
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="ml-2 px-3 py-2 text-xs font-bold text-rose-200 hover:bg-rose-900/40 rounded-lg transition flex items-center gap-1 border border-rose-400/40"
+                                    >
+                                        <i className="fa-solid fa-right-from-bracket"></i>
+                                        <span className="hidden sm:inline">Keluar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </header>
+                    )}
+
+                    {/* ==================== 2. DASHBOARD ==================== */}
+                    {page === 'dashboard' && (
+                        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                            <div className="bg-gradient-to-r from-sky-500 via-sky-400 to-sky-600 rounded-3xl p-6 sm:p-10 text-white shadow-xl mb-8 relative overflow-hidden border-2 border-sky-300">
+                                <div className="max-w-2xl relative z-10">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/30 backdrop-blur-md text-xs font-bold text-white border border-white/30 mb-4">
+                                        <i className="fa-solid fa-wand-magic-sparkles text-amber-300"></i> AI Asesmen SD • Merdeka Belajar
+                                    </div>
+                                    <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-3">
+                                        AI PEMBUAT SOAL OTOMATIS
+                                    </h2>
+                                    <p className="text-sky-50 text-sm sm:text-base leading-relaxed mb-6 font-medium">
+                                        Sistem Cerdas Penyusunan Asesmen Guru SD UPTD SDN BANJAR TABULU 1. Buat soal HOTS, Kisi-kisi, dan Kunci Jawaban instan secara akurat.
+                                    </p>
+                                    <div className="flex flex-wrap gap-3">
+                                        <button
+                                            onClick={() => setPage('form')}
+                                            className="px-6 py-3.5 bg-slate-100 text-sky-900 hover:bg-slate-200 font-extrabold rounded-xl shadow-lg transition flex items-center gap-2 text-sm border-2 border-slate-300 cursor-pointer"
+                                        >
+                                            <i className="fa-solid fa-plus text-sky-600"></i>
+                                            <span>BUAT SOAL BARU</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setPage('history')}
+                                            className="px-5 py-3.5 bg-sky-700/60 hover:bg-sky-700 text-white font-bold rounded-xl border border-sky-300 transition flex items-center gap-2 text-sm cursor-pointer"
+                                        >
+                                            <i className="fa-solid fa-clock-rotate-left text-sky-200"></i>
+                                            <span>RIWAYAT SOAL ({history.length})</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-slate-100 rounded-2xl p-6 border-2 border-sky-200 shadow-sm mb-8 flex flex-wrap items-center justify-between gap-6">
+                                <div className="flex items-center gap-4">
+                                    <SchoolLogo className="w-14 h-16 flex-shrink-0" />
+                                    <div>
+                                        <h3 className="font-black text-slate-900 text-lg">UPTD SDN BANJAR TABULU 1</h3>
+                                        <p className="text-xs font-semibold text-sky-700">NPSN: 20552391 • KECAMATAN CAMPLONG, KABUPATEN SAMPANG</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-6 text-xs text-slate-700 border-t sm:border-t-0 sm:border-l-2 border-sky-200 pt-3 sm:pt-0 sm:pl-6">
+                                    <div>
+                                        <span className="block text-slate-400 font-bold">Guru Pengampu:</span>
+                                        <span className="font-extrabold text-slate-900">Da'watul Choiroh, S.Pd.I.</span>
+                                    </div>
+                                    <div>
+                                        <span className="block text-slate-400 font-bold">Kepala Sekolah:</span>
+                                        <span className="font-extrabold text-slate-900">YUDIK PRISTONO, S.Pd.SD</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    )}
+
+                    {/* ==================== 3. FORMULIR ==================== */}
+                    {page === 'form' && (
+                        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+                            <div className="bg-slate-100 rounded-3xl border-2 border-sky-200 shadow-xl p-6 sm:p-8">
+                                <div className="border-b-2 border-sky-200 pb-5 mb-6 flex items-center justify-between">
+                                    <div>
+                                        <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                                            <i className="fa-solid fa-sliders text-sky-600"></i>
+                                            Formulir Pengaturan Pembuatan Soal
+                                        </h2>
+                                        <p className="text-xs text-slate-500 font-medium">Lengkapi parameter di bawah ini agar AI dapat merancang soal yang presisi.</p>
+                                    </div>
+                                </div>
+
+                                <form onSubmit={(e) => { e.preventDefault(); generateQuestionsWithAI(); }} className="space-y-6">
+                                    <div className="bg-slate-200/60 p-4 sm:p-5 rounded-2xl border border-sky-200 space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-800 mb-1">Nama Guru Pembuat</label>
+                                                <input
+                                                    type="text"
+                                                    value={formData.teacherName}
+                                                    onChange={(e) => setFormData({ ...formData, teacherName: e.target.value })}
+                                                    className="w-full px-3 py-2 bg-slate-100 border border-sky-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-800 mb-1">Kelas / Fase (Otomatis)</label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <select
+                                                        value={formData.gradeClass}
+                                                        onChange={(e) => setFormData({ ...formData, gradeClass: e.target.value })}
+                                                        className="w-full px-3 py-2 bg-slate-100 border border-sky-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-sky-500"
+                                                    >
+                                                        <option value="Kelas 1">Kelas 1</option>
+                                                        <option value="Kelas 2">Kelas 2</option>
+                                                        <option value="Kelas 3">Kelas 3</option>
+                                                        <option value="Kelas 4">Kelas 4</option>
+                                                        <option value="Kelas 5">Kelas 5</option>
+                                                        <option value="Kelas 6">Kelas 6</option>
+                                                    </select>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.fase}
+                                                        readOnly
+                                                        className="w-full px-3 py-2 bg-slate-300 border border-sky-300 rounded-xl text-sm font-extrabold text-sky-900 text-center"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-800 mb-1">Semester</label>
+                                                <select
+                                                    value={formData.semester}
+                                                    onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
+                                                    className="w-full px-3 py-2 bg-slate-100 border border-sky-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-sky-500"
+                                                >
+                                                    <option value="Semester Ganjil">Semester Ganjil</option>
+                                                    <option value="Semester Genap">Semester Genap</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-800 mb-1">Mata Pelajaran</label>
+                                                <select
+                                                    value={formData.subject}
+                                                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                                                    className="w-full px-3 py-2 bg-slate-100 border border-sky-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-sky-500"
+                                                >
+                                                    <option value="Matematika">Matematika</option>
+                                                    <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+                                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                                    <option value="IPAS">IPAS (IPA-IPS)</option>
+                                                    <option value="Seni Budaya">Seni Budaya</option>
+                                                    <option value="Bahasa Madura">Bahasa Madura</option>
+                                                    <option value="PJOK">PJOK</option>
+                                                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                                                    <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
+                                                    <option value="Koding dan Kecerdasan Artifisial (KKA)">Koding & Kecerdasan Artifisial (KKA)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-800 mb-1">Materi / Ruang Lingkup</label>
+                                            <input
+                                                type="text"
+                                                value={formData.material}
+                                                onChange={(e) => setFormData({ ...formData, material: e.target.value })}
+                                                placeholder="Contoh: Bilangan Cacah, Rukun Iman, Sistem Pernapasan, dll."
+                                                className="w-full px-3 py-2 bg-slate-100 border border-sky-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-sky-500"
+                                                required
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-800 mb-1">Tujuan Pembelajaran (TP)</label>
+                                            <textarea
+                                                value={formData.learningGoal}
+                                                onChange={(e) => setFormData({ ...formData, learningGoal: e.target.value })}
+                                                rows={3}
+                                                className="w-full px-3 py-2 bg-slate-100 border border-sky-300 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-sky-500"
+                                                required
+                                            ></textarea>
+                                        </div>
+                                    </div>
+
+                                    {errorMessage && (
+                                        <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2 font-medium">
+                                            <i className="fa-solid fa-circle-exclamation text-rose-500"></i>
+                                            <span>{errorMessage}</span>
+                                        </div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="w-full py-4 bg-sky-500 hover:bg-sky-600 text-white font-extrabold rounded-2xl shadow-xl transition duration-200 flex items-center justify-center gap-3 text-base border-2 border-sky-600 cursor-pointer disabled:opacity-50"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <i className="fa-solid fa-spinner fa-spin text-lg"></i>
+                                                <span>{loadingStatus}</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+                                                <span>✨ BUAT SOAL DENGAN AI</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </div>
+                        </main>
+                    )}
+
+                    {/* ==================== 6. HASIL SOAL ==================== */}
+                    {page === 'result' && assessmentData && (
+                        <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+                            <div className="bg-gradient-to-r from-sky-600 to-sky-500 text-white rounded-2xl border-2 border-sky-600 p-4 shadow-xl mb-6 flex flex-wrap items-center justify-between gap-3 no-print">
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setPage('form')}
+                                        className="px-3 py-2 text-xs font-bold text-sky-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        <i className="fa-solid fa-arrow-left"></i>
+                                        <span>Pengaturan</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setIsEditing(!isEditing)}
+                                        className={`px-3 py-2 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer ${
+                                            isEditing ? 'bg-amber-500 text-white' : 'bg-amber-400 text-slate-900 hover:bg-amber-300'
+                                        }`}
+                                    >
+                                        <i className="fa-solid fa-pen-to-square"></i>
+                                        <span>{isEditing ? "Selesai Edit" : "Edit Soal"}</span>
+                                    </button>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <button
+                                        onClick={handleSaveAssessment}
+                                        className="px-3 py-2 text-xs font-bold text-emerald-900 bg-emerald-300 hover:bg-emerald-200 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        <i className="fa-solid fa-floppy-disk"></i>
+                                        <span>Simpan</span>
+                                    </button>
+                                    <button
+                                        onClick={() => window.print()}
+                                        className="px-3 py-2 text-xs font-bold text-sky-900 bg-slate-200 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        <i className="fa-solid fa-print"></i>
+                                        <span>Cetak Lembar Siswa</span>
+                                    </button>
+                                    <button
+                                        onClick={handleExportWord}
+                                        className="px-3 py-2 text-xs font-bold text-sky-900 bg-slate-200 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        <i className="fa-solid fa-file-word"></i>
+                                        <span>Word (.doc)</span>
+                                    </button>
+                                    <button
+                                        onClick={handleExportPDF}
+                                        className="px-3 py-2 text-xs font-bold text-rose-900 bg-rose-200 hover:bg-rose-100 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        <i className="fa-solid fa-file-pdf"></i>
+                                        <span>PDF</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* DOCUMENT SHEET */}
+                            <div id="printable-assessment-area" className="bg-slate-100 rounded-3xl border-2 border-sky-200 shadow-2xl p-8 sm:p-12 space-y-8 text-slate-900 font-serif">
+                                <div className="border-b-4 border-double border-slate-900 pb-4 flex items-center justify-between gap-4 font-sans">
+                                    <SchoolLogo className="w-20 h-24 flex-shrink-0" />
+                                    <div className="text-center flex-1">
+                                        <h2 className="text-base sm:text-lg font-black uppercase tracking-wide">PEMERINTAH KABUPATEN SAMPANG</h2>
+                                        <h1 className="text-xl sm:text-2xl font-black uppercase text-sky-900">UPTD SDN BANJAR TABULU 1</h1>
+                                        <p className="text-xs text-slate-600 font-bold italic">Kecamatan Camplong, Kabupaten Sampang, Jawa Timur 69254</p>
+                                    </div>
+                                    <div className="w-20 hidden sm:block"></div>
+                                </div>
+
+                                <div className="font-sans text-xs bg-slate-200/80 p-4 rounded-2xl border-2 border-sky-200 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div><span className="text-slate-500 font-bold block">Mata Pelajaran:</span><span className="font-extrabold text-slate-900">{assessmentData.metadata.subject}</span></div>
+                                    <div><span className="text-slate-500 font-bold block">Kelas / Fase:</span><span className="font-extrabold text-slate-900">{assessmentData.metadata.gradeClass} ({assessmentData.metadata.fase})</span></div>
+                                    <div><span className="text-slate-500 font-bold block">Semester:</span><span className="font-extrabold text-slate-900">{assessmentData.metadata.semester}</span></div>
+                                    <div><span className="text-slate-500 font-bold block">Guru Pengampu:</span><span className="font-extrabold text-slate-900">{assessmentData.metadata.teacherName}</span></div>
+                                </div>
+
+                                {/* LEMBAR SOAL */}
+                                <div className="space-y-6">
+                                    <div className="text-center font-sans border-b border-slate-300 pb-3">
+                                        <h3 className="text-lg font-black uppercase text-sky-900">{assessmentData.content.title || `LEMBAR SOAL ${assessmentData.metadata.assessmentType.toUpperCase()}`}</h3>
+                                        <p className="text-xs italic text-slate-600 mt-1">{assessmentData.content.instructions}</p>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        {assessmentData.content.questions.map((q, qIndex) => (
+                                            <div key={qIndex} className="space-y-2 border-b border-slate-300 pb-4">
+                                                <div className="flex gap-2">
+                                                    <span className="font-extrabold">{q.number}.</span>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm leading-relaxed">{q.questionText}</p>
+                                                        {q.options && q.options.length > 0 && (
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pl-2">
+                                                                {q.options.map((opt, optIndex) => (
+                                                                    <div key={optIndex} className="text-sm flex items-center gap-2">
+                                                                        <span className="font-bold text-slate-700">{String.fromCharCode(65 + optIndex)}.</span>
+                                                                        <span>{opt}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* TANDA TANGAN */}
+                                <div className="pt-8 border-t-2 border-slate-900 font-sans grid grid-cols-2 text-center text-xs gap-8">
+                                    <div>
+                                        <p>Mengetahui,</p>
+                                        <p className="font-extrabold">Kepala UPTD SDN BANJAR TABULU 1</p>
+                                        <div className="h-20"></div>
+                                        <p className="font-black underline">YUDIK PRISTONO, S.Pd.SD</p>
+                                        <p className="font-bold">NIP. 197902192014061002</p>
+                                    </div>
+                                    <div>
+                                        <p>Banjar Tabulu, {formatDateIndo(assessmentData.metadata.assessmentDate)}</p>
+                                        <p className="font-extrabold">Guru Mata Pelajaran / Kelas</p>
+                                        <div className="h-20"></div>
+                                        <p className="font-black underline">{assessmentData.metadata.teacherName}</p>
+                                        <p className="font-bold">NIP. -</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    )}
+
+                    <footer className="border-t-2 border-sky-200 bg-slate-200 py-6 mt-12 text-center text-xs text-slate-600 no-print">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                            <SchoolLogo className="w-6 h-7" />
+                            <span className="font-black text-slate-900">SMART QUESTION BATALU 1</span>
+                        </div>
+                        <p className="font-bold text-sky-700">UPTD SDN BANJAR TABULU 1 • KEC. CAMPLONG, KAB. SAMPANG</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
